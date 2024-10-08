@@ -1,5 +1,5 @@
 <script setup>
-import 
+import {loginUser} from '../assets/apiCalls';
 </script>
 
 <template>
@@ -16,6 +16,10 @@ import
                         <div class="divider d-flex align-items-center my-4">
                             <p class="text-center fw-bold mx-3 mb-0" style="font-size:x-large;">Login</p>
                         </div>
+
+                        <p id="infoMessageId" class="text-center fw-bold mx-3 mb-0" style="font-size: small;">
+                            {{ infoMessage }}
+                        </p>
 
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
@@ -59,14 +63,22 @@ export default {
         return {
             email: '',
             password: '',
+            infoMessage: '',
         }
     },
     methods: {
         async Login() {
-            const User = await loginUser(this.email, this.password);
-            console.log('email', this.email)
-            console.log('password', this.password)
-            console.log('inlogpoging');
+            const { data, status } = await loginUser(this.email, this.password);
+            if (status === 200) {
+                console.log('ingelogd')
+                document.getElementById("infoMessageId").style.color = "green";
+
+            } else {
+                console.log('mislukt')
+                document.getElementById("infoMessageId").style.color = "red";
+            }
+            console.log(data)
+            this.infoMessage = data.message || data.error;
         },
     }
 }
